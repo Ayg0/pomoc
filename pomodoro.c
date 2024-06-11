@@ -90,26 +90,35 @@ void DrawnextCatFrame(){
 
 	// draw frame under the timer w.ws_row / 2 + 1
 	for (int i = 0; i < 3; i++)
-	{
 		printf("\033[%d;%dH%s", w.ws_row / 2 + 2 + i, padding, cat_frames[frame * 3 + i]);
-	}
 	frame = (frame + 1) % 4;
-	
-	
 }
 
-void print_centered(char *time, char *helpers) {
+size_t	strlenIgnoreAnsi(char *str){
+	size_t len = 0;
+	for (size_t i = 0; str[i]; i++){
+		if (str[i] == '\033'){
+			while (str[i] != 'm')
+				i++;
+		}
+		else
+			len++;
+	}
+	return len;
+}
+
+void print_centered(char *mainStr, char *helpers) {
 	struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
 	clear_terminal();
 	if (helpers){
-		int helper_padding = (w.ws_col - strlen(helpers)) / 2;
+		int helper_padding = (w.ws_col - strlenIgnoreAnsi(helpers)) / 2;
 		printf("\033[%d;%dH\033[1m%s\033[0m\n", w.ws_row / 2 - 2, helper_padding, helpers);
 	}
-	int padding = (w.ws_col - strlen(time)) / 2;
 	DrawnextCatFrame();
-	printf("\033[%d;%dH\033[1m%s\033[0m\n", w.ws_row / 2, padding, time);
+	int padding = (w.ws_col - strlenIgnoreAnsi(mainStr)) / 2;
+	printf("\033[%d;%dH\033[1m%s\033[0m\n", w.ws_row / 2, padding, mainStr);
 }
 
 char *getRandomHelper(enum state state){
