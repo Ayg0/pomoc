@@ -49,6 +49,55 @@ char *rests[] = {
 	"Take a breather...",
 };
 
+void DrawnextCatFrame(){
+	static int frame = 0;
+	/*
+			 |\__/,|  (`\
+		  _.|o o  |_   ) )
+		-(((---(((--------
+
+			 |\__/,|   (`\
+		  _.|o o  |_   ) )
+		-(((---(((--------
+
+			 |\__/,|    (`\
+		  _.|o o  |_   ) )
+		-(((---(((--------
+
+			 |\__/,|    /`)
+		  _.|o o  |_   ) )
+		-(((---(((--------
+	*/
+    const char* cat_frames[] = {
+		"     |\\__/,|  (`\\",
+		"  _.|o o  |_   ) )",
+		"-(((---(((--------",
+		"     |\\__/,|   (`\\",
+		"  _.|o o  |_   ) )",
+		"-(((---(((--------",
+		"     |\\__/,|    (`\\",
+		"  _.|o o  |_   ) )",
+		"-(((---(((--------",
+		"     |\\__/,|    /`)",
+		"  _.|o o  |_   ) )",
+		"-(((---(((--------",
+    };
+
+	// each tree lines are a cat frame, draw under the timer
+	struct winsize w;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+	int padding = (w.ws_col - 18) / 2;
+
+	// draw frame under the timer w.ws_row / 2 + 1
+	for (int i = 0; i < 3; i++)
+	{
+		printf("\033[%d;%dH%s", w.ws_row / 2 + 2 + i, padding, cat_frames[frame * 3 + i]);
+	}
+	frame = (frame + 1) % 4;
+	
+	
+}
+
 void print_centered(char *time, char *helpers) {
 	struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -59,6 +108,7 @@ void print_centered(char *time, char *helpers) {
 		printf("\033[%d;%dH\033[1m%s\033[0m\n", w.ws_row / 2 - 2, helper_padding, helpers);
 	}
 	int padding = (w.ws_col - strlen(time)) / 2;
+	DrawnextCatFrame();
 	printf("\033[%d;%dH\033[1m%s\033[0m\n", w.ws_row / 2, padding, time);
 }
 
