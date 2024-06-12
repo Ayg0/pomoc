@@ -1,10 +1,5 @@
 # pomoC
   a CLI pomodoro Timer written in C.
-<div style="display: flex; justify-content: space-between;">
-  <img src="img/pomo1.png" style="width: 48%;" />
-  <img src="img/pomo2.png" style="width: 48%;" /> 
-</div>
-
 ## Freatures:
   - work/rest time configuration via program arguments.
   - customize the cat colors using ansi escape sequence.
@@ -24,3 +19,5 @@
     ```
       $> ./pomodoro 25 5
     ```
+ <img src="img/pomo1.png" />
+ <img src="img/pomo2.png" /> 
