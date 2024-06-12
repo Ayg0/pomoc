@@ -49,25 +49,23 @@ char *rests[] = {
 	"Take a breather...",
 };
 
+size_t	strlenIgnoreAnsi(char *s){
+	size_t len = 0;
+	for (size_t i = 0; s[i]; i++){
+		if (s[i] == '\033'){
+			while (s[i] && s[i] != 'm')
+				i++;
+		}
+		else
+			len++;
+	}
+	return len;
+}
+
+
 void DrawnextCatFrame(){
 	static int frame = 0;
-	/*
-			 |\__/,|  (`\
-		  _.|o o  |_   ) )
-		-(((---(((--------
 
-			 |\__/,|   (`\
-		  _.|o o  |_   ) )
-		-(((---(((--------
-
-			 |\__/,|    (`\
-		  _.|o o  |_   ) )
-		-(((---(((--------
-
-			 |\__/,|    /`)
-		  _.|o o  |_   ) )
-		-(((---(((--------
-	*/
     const char* cat_frames[] = {
 		"     |\\__/,|  (`\\",
 		"  _.|o o  |_   ) )",
@@ -86,25 +84,13 @@ void DrawnextCatFrame(){
 	// each tree lines are a cat frame, draw under the timer
 	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+
 	int padding = (w.ws_col - 18) / 2;
 
 	// draw frame under the timer w.ws_row / 2 + 1
 	for (int i = 0; i < 3; i++)
 		printf("\033[%d;%dH%s", w.ws_row / 2 + 2 + i, padding, cat_frames[frame * 3 + i]);
 	frame = (frame + 1) % 4;
-}
-
-size_t	strlenIgnoreAnsi(char *str){
-	size_t len = 0;
-	for (size_t i = 0; str[i]; i++){
-		if (str[i] == '\033'){
-			while (str[i] != 'm')
-				i++;
-		}
-		else
-			len++;
-	}
-	return len;
 }
 
 void print_centered(char *mainStr, char *helpers) {
@@ -170,8 +156,8 @@ void sigintHandler(int sig_num)
 }
 
 int	main(int ac, char **av){
-    double delay = 0.17; // default delay in minutes
-	double restDelay = 0.17; // default rest delay in minutes
+    double delay = 25; // default delay in minutes
+	double restDelay = 5; // default rest delay in minutes
 
     if (ac >= 2)
         delay = atoi(av[1]);
