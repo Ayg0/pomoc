@@ -12,7 +12,8 @@ enum state {
 	REST
 };
 
-enum state current_state = WORK;
+int			session = 1;
+enum state	current_state = WORK;
 
 void clear_terminal() {
     printf("\033[H\033[J");
@@ -88,8 +89,13 @@ void DrawnextCatFrame(){
 	int padding = (w.ws_col - 18) / 2;
 
 	// draw frame under the timer w.ws_row / 2 + 1
-	for (int i = 0; i < 3; i++)
-		printf("\033[%d;%dH%s", w.ws_row / 2 + 2 + i, padding, cat_frames[frame * 3 + i]);
+	for (int i = 0; i < 3; i++){
+		#ifdef CATCOLOR
+			printf("\033[%d;%dH\033[1m%s%s\033[0m", w.ws_row / 2 + 2 + i, padding, CATCOLOR, cat_frames[frame * 3 + i]);
+		#else
+			printf("\033[%d;%dH\033[1m\033[36m%s\033[0m", w.ws_row / 2 + 2 + i, padding, cat_frames[frame * 3 + i]);
+		#endif
+		}
 	frame = (frame + 1) % 4;
 }
 
@@ -105,6 +111,9 @@ void print_centered(char *mainStr, char *helpers) {
 	DrawnextCatFrame();
 	int padding = (w.ws_col - strlenIgnoreAnsi(mainStr)) / 2;
 	printf("\033[%d;%dH\033[1m%s\033[0m\n", w.ws_row / 2, padding, mainStr);
+
+	//print session at the bottom left
+	printf("\033[%d;%dH\033[1mSession: %d\033[0m\n", w.ws_row - 1, 0, session);
 }
 
 char *getRandomHelper(enum state state){
@@ -112,10 +121,9 @@ char *getRandomHelper(enum state state){
 }
 
 void holdTime(int delay, enum state state){
-	time_t	currentTime;
 	time_t start_time;
     time_t current_time;
-	char time_str[15];
+	char time_str[20];
 	char *helper = getRandomHelper(state);
     /* Obtain current time as start time */
     start_time = time(NULL);
@@ -135,9 +143,9 @@ void holdTime(int delay, enum state state){
     } while ((start_time + delay) > current_time);
 }
 
-void notifyStateChange(enum state current, enum state next){
+void notifyStateChange(enum state next){
 	char *next_state = next == WORK ? "\033[34mWork\033[0m" : "\033[32mRest\033[0m";
-	char str[30];
+	char str[40];
 
 	clear_terminal();
 	sprintf(str, "Time is up! Time to %s", next_state);
@@ -148,6 +156,7 @@ void notifyStateChange(enum state current, enum state next){
 
 void sigintHandler(int sig_num)
 {
+	(void)sig_num;
     /* Reset handler to catch SIGINT next time. */
     signal(SIGINT, sigintHandler);
     printf("\nProccess terminated by user\n");
@@ -156,13 +165,13 @@ void sigintHandler(int sig_num)
 }
 
 int	main(int ac, char **av){
-    double delay = 25; // default delay in minutes
-	double restDelay = 5; // default rest delay in minutes
+    double	delay = 25; // default delay in minutes
+	double	restDelay = 5; // default rest delay in minutes
 
-    if (ac >= 2)
-        delay = atoi(av[1]);
 	if (ac >= 3)
 		restDelay = atoi(av[2]);
+    if (ac >= 2)
+        delay = atoi(av[1]);
 
     delay *= 60; // convert delay to seconds
 	restDelay *= 60; // convert rest delay to seconds
@@ -172,9 +181,10 @@ int	main(int ac, char **av){
 	while (1)
 	{
 		holdTime(delay, WORK);
-		notifyStateChange(WORK, REST);
+		notifyStateChange(REST);
 		holdTime(restDelay, REST);
-		notifyStateChange(REST, WORK);
+		notifyStateChange(WORK);
+		session++;
 	}
 	write(1, "\033[?25h", 6); // show cursor
 	return 0;
