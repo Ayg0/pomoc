@@ -1,0 +1,10 @@
+------------------------------   Values   ------------------------------
+workTime: 25
+RestTime: 5
+catColor: CYAN
+soundPath: ./assets/Sounds/mixkit-attention-bell-ding-586.wav
+------------------------------   flags    ------------------------------
+long_rest: false
+show_session: false
+use_sound: true
+----------------------------------------------------------------------

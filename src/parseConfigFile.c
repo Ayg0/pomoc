@@ -3,19 +3,6 @@
 _pomodoroConf config;
 int	currentLineNumber = 0;
 
-void	turnLowerCase(char *s){
-	for (int i = 0; s[i]; i++)
-		s[i] = tolower(s[i]);
-}
-
-char *trimSpaces(char *s){
-	while (isspace(*s))
-		s++;
-	while (isspace(s[strlen(s) - 1]))
-		s[strlen(s) - 1] = 0;
-	return s;
-}
-
 void	parseError(char *msg){
 	fprintf(stderr, "Error on line %d: %s\n", currentLineNumber, msg);
 	exit(1);
@@ -142,21 +129,48 @@ int	parseLine(char *line){
 	return 0;
 }
 
-void	debugConfig(){
-	printf("------------------------------   Values   ------------------------------\n");
-	printf("workTime: %d\n", config.workTime);
-	printf("RestTime: %d\n", config.RestTime);
-	printf("catColor: %s COLOR-TEST\033[0m\n", config.catColor);
-	printf("soundPath: %s\n", config.soundPath);
-	printf("------------------------------   flags    ------------------------------\n");
-	printf("long_rest: %s\n", IS_FLAG_SET(config, FLAG_LONG_REST) ? "true" : "false");
-	printf("show_session: %s\n", IS_FLAG_SET(config, FLAG_SHOW_SESSION)? "true" : "false");
-	printf("use_sound: %s\n", IS_FLAG_SET(config, FLAG_USE_SOUND) ? "true" : "false");
-	while (1)
-	{
-		/* code */
+char	*fromAnsiToColor(char *color){
+	char *colors[] = {
+		"RED",
+		"GREEN",
+		"YELLOW",
+		"BLUE",
+		"MAGENTA",
+		"CYAN",
+		"WHITE",
+		NULL
+	};
+	char *ansiColors[] = {
+		"\033[31m",
+		"\033[32m",
+		"\033[33m",
+		"\033[34m",
+		"\033[35m",
+		"\033[36m",
+		"\033[37m",
+	};
+	for (int i = 0; colors[i]; i++){
+		if (strcmp(color, ansiColors[i]) == 0)
+			return colors[i];
 	}
-	
+	return NULL;
+}
+
+void	debugConfig(){
+	FILE *LOG = fopen("pomodoro.log", "w");
+
+	fprintf( LOG, "------------------------------   Values   ------------------------------\n");
+	fprintf( LOG, "workTime: %d\n", config.workTime);
+	fprintf( LOG, "RestTime: %d\n", config.RestTime);
+	fprintf( LOG, "catColor: %s\n", fromAnsiToColor(config.catColor));
+	fprintf( LOG, "soundPath: %s\n", config.soundPath);
+	fprintf( LOG, "------------------------------   flags    ------------------------------\n");
+	fprintf( LOG, "long_rest: %s\n", IS_FLAG_SET(config, FLAG_LONG_REST) ? "true" : "false");
+	fprintf( LOG, "show_session: %s\n", IS_FLAG_SET(config, FLAG_SHOW_SESSION)? "true" : "false");
+	fprintf( LOG, "use_sound: %s\n", IS_FLAG_SET(config, FLAG_USE_SOUND) ? "true" : "false");
+	fprintf( LOG, "----------------------------------------------------------------------\n");	
+
+	fclose(LOG);
 }
 
 int	parseConf(char *configPath){

@@ -1,11 +1,12 @@
 NAME=pomodoro
 
-SRC = pomodoro.c parseConfigFile.c
 
-CFLAGS = -Wall -Wextra -Werror -g
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
 
 CONF_FILE = '"./pomodoro.conf"'
 
+SRC = $(shell find . -type f -name "*.c")
 OBJ = $(SRC:.c=.o)
 
 .c.o:
@@ -14,7 +15,7 @@ OBJ = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
 clean:
 	rm -f $(OBJ)

@@ -3,6 +3,7 @@
 		"cstdlib": "c",
 		"pomodoro.h": "c",
 		"stdlib.h": "c",
-		"fcntl.h": "c"
+		"fcntl.h": "c",
+		"time.h": "c"
 	}
 }
