@@ -59,4 +59,4 @@ void displayInfo(char *mainStr, char *helpers);
 void	clearTerminal();
 size_t	strlenIgnoreAnsi(char *s);
 char	*trimSpaces(char *s);
-void	turnLowerCase(char *s);
+void	turnLowerCase(char **s);

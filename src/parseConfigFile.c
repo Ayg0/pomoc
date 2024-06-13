@@ -13,8 +13,9 @@ _tokenValue getTokenValue(char *line){
 	char *token = strtok(line, "=");
 	char *value = strtok(NULL, "=");
 
-
 	tokenVal.token = trimSpaces(token);
+	if (!value)
+		parseError("No value provided for token");
 	tokenVal.value = trimSpaces(value);
 	
 	return tokenVal;
@@ -43,7 +44,7 @@ int	checkToken(char *token){
 
 int	getTrueFalse(char *value){
 
-	turnLowerCase(value);
+	turnLowerCase(&value);
 
 	if (strcmp(value, "true") == 0)
 		return 1;
@@ -62,7 +63,7 @@ int	setResetFlag(char *value, int flag){
 }
 
 char *getAnsiColor(char *value){
-	turnLowerCase(value);
+	turnLowerCase(&value);
 
 	char *colors[] = {
 		"red",
@@ -173,6 +174,13 @@ void	debugConfig(){
 	fclose(LOG);
 }
 
+void removeNewLine(char **line){
+	int len = strlen(*line);
+
+	if ((*line)[len - 1] == '\n')
+		(*line)[len - 1] = '\0';
+}
+
 int	parseConf(char *configPath){
 	FILE *configFile;
 	char *line = NULL;
@@ -189,6 +197,7 @@ int	parseConf(char *configPath){
 		currentLineNumber++;
 		if (line[0] == '#')
 			continue;
+		removeNewLine(&line);
 		parseLine(line);
 	}
 	debugConfig();

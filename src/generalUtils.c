@@ -19,16 +19,18 @@ size_t	strlenIgnoreAnsi(char *s){
 }
 
 // turn a string to lower case
-void	turnLowerCase(char *s){
-	for (int i = 0; s[i]; i++)
-		s[i] = tolower(s[i]);
+void	turnLowerCase(char **s){
+	for (size_t i = 0; (*s)[i]; i++)
+		(*s)[i] = tolower((*s)[i]);
 }
 
 // Function to remove leading and trailing spaces from a string
 char *trimSpaces(char *s){
+	size_t len = strlen(s);
+
 	while (isspace(*s))
 		s++;
-	while (isspace(s[strlen(s) - 1]))
-		s[strlen(s) - 1] = 0;
+	for (size_t i = len - 1; isspace(s[i]); i--)
+		s[i] = '\0';
 	return s;
 }
