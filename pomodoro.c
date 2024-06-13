@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <signal.h>
+#include "pomodoro.h"
 
 // state of the timer
 enum state {
@@ -14,7 +15,7 @@ enum state {
 
 int			session = 1;
 enum state	current_state = WORK;
-
+extern _pomodoroConf config;
 void clear_terminal() {
     printf("\033[H\033[J");
 }
@@ -90,11 +91,7 @@ void DrawnextCatFrame(){
 
 	// draw frame under the timer w.ws_row / 2 + 1
 	for (int i = 0; i < 3; i++){
-		#ifdef CATCOLOR
-			printf("\033[%d;%dH\033[1m%s%s\033[0m", w.ws_row / 2 + 2 + i, padding, CATCOLOR, cat_frames[frame * 3 + i]);
-		#else
-			printf("\033[%d;%dH\033[1m\033[36m%s\033[0m", w.ws_row / 2 + 2 + i, padding, cat_frames[frame * 3 + i]);
-		#endif
+			printf("\033[%d;%dH\033[1m%s%s\033[0m", w.ws_row / 2 + 2 + i, padding, config.catColor, cat_frames[frame * 3 + i]);
 		}
 	frame = (frame + 1) % 4;
 }
@@ -150,7 +147,8 @@ void notifyStateChange(enum state next){
 	clear_terminal();
 	sprintf(str, "Time is up! Time to %s", next_state);
 	print_centered(str, NULL);
-	system("aplay -q mixkit-attention-bell-ding-586.wav");
+	if (IS_FLAG_SET(config, FLAG_USE_SOUND))
+		system(strcat("aplay -q ", config.soundPath));
 	sleep(2);
 }
 
@@ -164,25 +162,36 @@ void sigintHandler(int sig_num)
     exit(0);
 }
 
-int	main(int ac, char **av){
-    double	delay = 25; // default delay in minutes
-	double	restDelay = 5; // default rest delay in minutes
+int	getRestTime(int restTime, int session){
+	if (session != 1 && IS_FLAG_SET(config, FLAG_LONG_REST) && (session % 3 == 0))
+		return restTime * 3;
+	return restTime;
+}
 
+void	updateViaArgs(int ac, char **av){
 	if (ac >= 3)
-		restDelay = atoi(av[2]);
-    if (ac >= 2)
-        delay = atoi(av[1]);
+		config.RestTime = atoi(av[2]);
+	if (ac >= 2)
+		config.workTime = atoi(av[1]);
+}
 
-    delay *= 60; // convert delay to seconds
-	restDelay *= 60; // convert rest delay to seconds
+int	main(int ac, char **av){
+
+	#ifdef CONF_FILE
+		parseConf(CONF_FILE);
+	#else
+		parseConf("pomodoro.conf");
+	#endif
+
+	updateViaArgs(ac, av);
 
 	write(1, "\033[?25l", 6); // hide cursor
 	signal(SIGINT, sigintHandler);
 	while (1)
 	{
-		holdTime(delay, WORK);
+		holdTime(config.workTime, WORK);
 		notifyStateChange(REST);
-		holdTime(restDelay, REST);
+		holdTime(getRestTime(config.RestTime, session), REST);
 		notifyStateChange(WORK);
 		session++;
 	}

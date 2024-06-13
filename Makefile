@@ -1,15 +1,15 @@
 NAME=pomodoro
 
-SRC = pomodoro.c
+SRC = pomodoro.c parseConfigFile.c
 
 CFLAGS = -Wall -Wextra -Werror -g
 
-CATCOLOR = \"\\033[33m\"
+CONF_FILE = '"./pomodoro.conf"'
 
 OBJ = $(SRC:.c=.o)
 
 .c.o:
-	$(CC) $(CFLAGS) -DCATCOLOR=$(CATCOLOR) -c $< -o $(<:.c=.o)
+	$(CC) $(CFLAGS) -DCONF_FILE=$(CONF_FILE) -c $< -o $(<:.c=.o)
 
 all: $(NAME)
 
