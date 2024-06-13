@@ -27,7 +27,9 @@
       $> ./pomodoro 25 5
     ```
 ## > Contributing:
-	Contributions are welcome! Feel free to open issues or pull requests for bug fixes, improvements, or new features. 
+
+  Contributions are welcome! Feel free to open issues or pull requests for bug fixes, improvements, or new features. 
+## > DEMO:
 <p align="center">
  	<img src="assets/img/pomo2.png" />
 	<img src="assets/img/pomo.gif" />
