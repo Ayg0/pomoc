@@ -23,9 +23,9 @@ int	getRestTime(int restTime, int session){
 
 void	updateViaArgs(int ac, char **av){
 	if (ac >= 3)
-		config.RestTime = atoi(av[2]);
+		config.RestTime = atoi(av[2]) * 60;
 	if (ac >= 2)
-		config.workTime = atoi(av[1]);
+		config.workTime = atoi(av[1]) * 60;
 }
 
 void	pomodoroStart(){
