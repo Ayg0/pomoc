@@ -11,7 +11,7 @@
  * **Cat:** Bro we litteraly have a cat and you can color it, COLOR the cat, Cool I know.
 ## > Requirements:
   - C compiler (e.g., GCC).
-  - applay (if you want to get sound notification.). 
+  - aplay (if you want to get sound notification.). 
 ## > usage:
   - make the executable:
     ```
