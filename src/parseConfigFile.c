@@ -10,12 +10,13 @@ void	parseError(char *msg){
 
 _tokenValue getTokenValue(char *line){
 	_tokenValue tokenVal;
+
 	char *token = strtok(line, "=");
 	char *value = strtok(NULL, "=");
 
+	if (!token || !value)
+		parseError("Invalid line in config file");
 	tokenVal.token = trimSpaces(token);
-	if (!value)
-		parseError("No value provided for token");
 	tokenVal.value = trimSpaces(value);
 	
 	return tokenVal;
@@ -122,6 +123,8 @@ int	updateValue(int tokenIndex, char *value){
 int	parseLine(char *line){
 	int	tokenIndex;
 
+	if (trimSpaces(line)[0] == '\0')
+		return 0;
 	_tokenValue tokenVal =  getTokenValue(line);
 	tokenIndex = checkToken(tokenVal.token);
 	if (tokenIndex == -1)
@@ -174,13 +177,6 @@ void	debugConfig(){
 	fclose(LOG);
 }
 
-void removeNewLine(char **line){
-	int len = strlen(*line);
-
-	if ((*line)[len - 1] == '\n')
-		(*line)[len - 1] = '\0';
-}
-
 int	parseConf(char *configPath){
 	FILE *configFile;
 	char *line = NULL;
@@ -197,7 +193,6 @@ int	parseConf(char *configPath){
 		currentLineNumber++;
 		if (line[0] == '#')
 			continue;
-		removeNewLine(&line);
 		parseLine(line);
 	}
 	debugConfig();
