@@ -8,7 +8,7 @@
  * **Motivational Phrases:** each minute you'll get a new phrase to keep you going (you can change them in src/display.c).
  * **Session Counter:** Track your productivity with a visual indicator of completed sessions.
  * **Notification Sound:** Get audible notifications (using `aplay`) for work/rest transitions.
- * **Optional:** Bro we litteraly have a cat and you can color it COLOR the cat, cool I know.
+ * **Cat:** Bro we litteraly have a cat and you can color it, COLOR the cat, Cool I know.
 ## > Requirements:
   - C compiler (e.g., GCC).
   - applay (if you want to get sound notification.). 
@@ -26,8 +26,9 @@
     ```
       $> ./pomodoro 25 5
     ```
+## > 
 <p align="center">
-	<img src="assets/img/pomo1.png" />
  	<img src="assets/img/pomo2.png" />
+	<img src="assets/img/pomo.gif" />
 </p>
 
