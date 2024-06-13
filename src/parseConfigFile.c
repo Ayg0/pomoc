@@ -196,6 +196,8 @@ int	parseConf(char *configPath){
 		parseLine(line);
 	}
 	debugConfig();
+	config.workTime *= 60;
+	config.RestTime *= 60;
 	fclose(configFile);
 	free(line);
 

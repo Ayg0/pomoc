@@ -19,5 +19,8 @@
     ```
       $> ./pomodoro 25 5
     ```
- <img src="img/pomo1.png" />
- <img src="img/pomo2.png" /> 
+<p align="center">
+	<img src="assets/img/pomo1.png" />
+ 	<img src="assets/img/pomo2.png" />
+</p>
+
