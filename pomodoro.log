@@ -2,9 +2,9 @@
 workTime: 25
 RestTime: 5
 catColor: CYAN
-soundPath: ./assets/Sounds/mixkit-attention-bell-ding-586.wav
+soundPath: /home/orayne/side-projects/pomodoro/assets/Sounds/mixkit-attention-bell-ding-586.wav
 ------------------------------   flags    ------------------------------
-long_rest: false
+long_rest: true
 show_session: true
 use_sound: true
 ----------------------------------------------------------------------

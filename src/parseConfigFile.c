@@ -195,7 +195,9 @@ int	parseConf(char *configPath){
 			continue;
 		parseLine(line);
 	}
-	debugConfig();
+	#ifdef ENABLE_LOG
+		debugConfig();
+	#endif
 	config.workTime *= 60;
 	config.RestTime *= 60;
 	fclose(configFile);
